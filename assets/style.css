@@ -1,0 +1,47 @@
+/* Custom styling for the app */
+.stButton>button {
+    width: 100%;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    background-color: #FF4B4B;
+    color: white;
+}
+
+.stButton>button:hover {
+    background-color: #FF6B6B;
+    color: white;
+}
+
+/* Style file uploader */
+.uploadedFile {
+    border: 2px dashed #CCCCCC;
+    border-radius: 5px;
+    padding: 20px;
+    text-align: center;
+}
+
+/* Style text areas */
+.stTextArea textarea {
+    border-radius: 5px;
+    border-color: #CCCCCC;
+}
+
+/* Style markdown content */
+.st-emotion-cache-1v0mbdj.e115fcil1 {
+    margin-top: 2rem;
+    margin-bottom: 2rem;
+}
+
+/* Style disclaimer */
+.element-container:last-child {
+    background-color: #F8F9FA;
+    padding: 1rem;
+    border-radius: 5px;
+    margin-top: 2rem;
+}
+
+/* Improve spacing */
+.block-container {
+    padding-top: 2rem;
+    padding-bottom: 2rem;
+}
