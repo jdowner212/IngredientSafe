@@ -14,14 +14,8 @@ with open("assets/style.css") as f:
     st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
 
 # Initialize Gemini API
-# my_secret = os.environ['gemini_api_key']
-# GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY", my_secret)
-# GOOGLE_API_KEY = os.getenv('gemini_api_key')
-GOOGLE_API_KEY = 'AIzaSyCKvYUBDy6LBKevePp9RdniBqMIMmVIB5U'
-
-print('GOOGLE_API_KEY:', GOOGLE_API_KEY)
+GOOGLE_API_KEY = st.secrets["GOOGLE_API_KEY"]
 genai.configure(api_key=GOOGLE_API_KEY)
-# model = genai.GenerativeModel('gemini-pro-vision')
 model = genai.GenerativeModel('gemini-1.5-flash')
 
 
