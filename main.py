@@ -5,14 +5,21 @@ import os
 from utils import process_image, create_prompt, validate_dietary_restrictions
 
 # Configure page
-st.set_page_config(page_title="Dietary Safety Checker",
-                   page_icon="🍽️",
-                   layout="centered")
+try:
+    st.set_page_config(page_title="Dietary Safety Checker",
+                      page_icon="🍽️",
+                      layout="centered")
+except Exception as e:
+    # In case set_page_config was already called
+    pass
 
 # Load and apply custom CSS
+css_loaded = False
 try:
-    with open("assets/style.css") as f:
-        st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
+    if os.path.exists("assets/style.css"):
+        with open("assets/style.css") as f:
+            st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
+            css_loaded = True
 except Exception as e:
     st.warning("Custom styling could not be loaded. The app will still function normally.")
 
@@ -21,11 +28,16 @@ try:
     GOOGLE_API_KEY = st.secrets["GOOGLE_API_KEY"]
     genai.configure(api_key=GOOGLE_API_KEY)
     model = genai.GenerativeModel('gemini-1.5-flash')
+    model_loaded = True
 except Exception as e:
     st.error("Error initializing the AI model. Please check your API key configuration.")
-    st.stop()
+    model_loaded = False
 
 def analyze_product(image, dietary_restrictions):
+    if not model_loaded:
+        st.error("AI model not properly initialized")
+        return None
+    
     try:
         # Process image
         processed_img = process_image(image)
@@ -37,7 +49,6 @@ def analyze_product(image, dietary_restrictions):
     except Exception as e:
         st.error(f"An error occurred during analysis: {str(e)}")
         return None
-
 
 def main():
     st.title("🍽️ Dietary Safety Checker")
@@ -56,8 +67,7 @@ def main():
     dietary_restrictions = st.text_area(
         "Describe your dietary restrictions",
         placeholder="Example: I'm vegetarian and allergic to nuts",
-        help=
-        "Include any allergies, religious restrictions, or dietary preferences"
+        help="Include any allergies, religious restrictions, or dietary preferences"
     )
 
     if uploaded_file and dietary_restrictions:
@@ -67,27 +77,32 @@ def main():
                 return
 
             with st.spinner("Analyzing ingredients..."):
-                # Display uploaded image
-                image = Image.open(uploaded_file)
-                st.image(image,
-                         caption="Uploaded Ingredients",
-                         use_container_width=True)
+                try:
+                    # Display uploaded image
+                    image = Image.open(uploaded_file)
+                    st.image(image,
+                            caption="Uploaded Ingredients",
+                            use_container_width=True)
 
-                # Get analysis
-                analysis = analyze_product(image, dietary_restrictions)
+                    # Get analysis
+                    analysis = analyze_product(image, dietary_restrictions)
 
-                if analysis:
-                    st.markdown("### Analysis Results")
-                    st.markdown(analysis)
+                    if analysis:
+                        st.markdown("### Analysis Results")
+                        st.markdown(analysis)
 
-                    # Add disclaimer
-                    st.markdown("""
-                    ---
-                    **Disclaimer**: This analysis is AI-generated and should not be the sole basis
-                    for dietary decisions. Always consult with healthcare professionals for medical advice.
-                    """)
-
+                        # Add disclaimer
+                        st.markdown("""
+                        ---
+                        **Disclaimer**: This analysis is AI-generated and should not be the sole basis
+                        for dietary decisions. Always consult with healthcare professionals for medical advice.
+                        """)
+                except Exception as e:
+                    st.error(f"Error processing image: {str(e)}")
 
 if __name__ == "__main__":
-    st.write("App is running!")
-    main()
+    try:
+        main()
+    except Exception as e:
+        st.error(f"Application error: {str(e)}")
+        st.write("Please try refreshing the page.")
