@@ -9,6 +9,9 @@ st.set_page_config(page_title="Dietary Safety Checker",
                    page_icon="🍽️",
                    layout="centered")
 
+
+
+
 # Load and apply custom CSS
 with open("assets/style.css") as f:
     st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
@@ -83,4 +86,5 @@ def main():
 
 
 if __name__ == "__main__":
+    st.write("App is running!")
     main()
