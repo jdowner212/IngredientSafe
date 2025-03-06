@@ -9,18 +9,21 @@ st.set_page_config(page_title="Dietary Safety Checker",
                    page_icon="🍽️",
                    layout="centered")
 
-
-
-
 # Load and apply custom CSS
-with open("assets/style.css") as f:
-    st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
+try:
+    with open("assets/style.css") as f:
+        st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
+except Exception as e:
+    st.warning("Custom styling could not be loaded. The app will still function normally.")
 
 # Initialize Gemini API
-GOOGLE_API_KEY = st.secrets["GOOGLE_API_KEY"]
-genai.configure(api_key=GOOGLE_API_KEY)
-model = genai.GenerativeModel('gemini-1.5-flash')
-
+try:
+    GOOGLE_API_KEY = st.secrets["GOOGLE_API_KEY"]
+    genai.configure(api_key=GOOGLE_API_KEY)
+    model = genai.GenerativeModel('gemini-1.5-flash')
+except Exception as e:
+    st.error("Error initializing the AI model. Please check your API key configuration.")
+    st.stop()
 
 def analyze_product(image, dietary_restrictions):
     try:
