@@ -10,9 +10,11 @@ auth = AuthManager()
 
 # Configure page
 try:
-    st.set_page_config(page_title="Dietary Safety Checker",
-                      page_icon="🍽️",
-                      layout="centered")
+    st.set_page_config(
+        page_title="GroceryHelper AI",
+        page_icon="🛒",
+        layout="centered"
+    )
 except Exception as e:
     # In case set_page_config was already called
     pass
@@ -67,21 +69,22 @@ def main():
             auth.logout()
             st.rerun()
 
-    st.title("🍽️ Dietary Safety Checker")
+    st.title("🛒 GroceryHelper AI")
     st.markdown("""
-    Upload a photo of product ingredients and describe your dietary restrictions.
-    We'll analyze if the product is safe for you to consume.
+    Upload a photo of product ingredients and describe your dietary needs.
+    Our AI will analyze if the product is safe for you to consume.
     """)
 
     # Image upload
     uploaded_file = st.file_uploader(
         "Upload ingredient list photo",
         type=["jpg", "jpeg", "png"],
-        help="Take a clear photo of the ingredient list")
+        help="Take a clear photo of the ingredient list"
+    )
 
     # Dietary restrictions input
     dietary_restrictions = st.text_area(
-        "Describe your dietary restrictions",
+        "Describe your dietary needs",
         placeholder="Example: I'm vegetarian and allergic to nuts",
         help="Include any allergies, religious restrictions, or dietary preferences"
     )
