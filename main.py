@@ -3,6 +3,10 @@ import google.generativeai as genai
 from PIL import Image
 import os
 from utils import process_image, create_prompt, validate_dietary_restrictions
+from auth import AuthManager
+
+# Initialize authentication
+auth = AuthManager()
 
 # Configure page
 try:
@@ -12,6 +16,11 @@ try:
 except Exception as e:
     # In case set_page_config was already called
     pass
+
+# Check authentication
+if not auth.is_logged_in():
+    st.warning("Please log in to use this application")
+    st.stop()
 
 # Load and apply custom CSS
 css_loaded = False
@@ -25,7 +34,7 @@ except Exception as e:
 
 # Initialize Gemini API
 try:
-    GOOGLE_API_KEY = st.secrets["GOOGLE_API_KEY"]
+    GOOGLE_API_KEY = st.secrets.api_keys.GOOGLE_API_KEY
     genai.configure(api_key=GOOGLE_API_KEY)
     model = genai.GenerativeModel('gemini-1.5-flash')
     model_loaded = True
@@ -51,6 +60,13 @@ def analyze_product(image, dietary_restrictions):
         return None
 
 def main():
+    # Show user info and logout button in sidebar
+    with st.sidebar:
+        st.write(f"Logged in as: {auth.get_current_user()}")
+        if st.button("Logout"):
+            auth.logout()
+            st.rerun()
+
     st.title("🍽️ Dietary Safety Checker")
     st.markdown("""
     Upload a photo of product ingredients and describe your dietary restrictions.
